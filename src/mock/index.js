@@ -1,10 +1,11 @@
 import Mock from "mockjs";
-let debug = 1;
+// mock框架用于模拟后端提供的接口，并提供假数据，以便前端在不依赖后端的情况下完成开发。
+let debug = 0;
 if (debug) {
   Mock.mock(/login/, {
     data: {
       userId: "@integer(1,10)",
-      "userName|1": ["鲁班七号", "甄姬", "东皇太一", "娜可露露", "蔡文姬", "王昭君", "妲己"],
+      "userName|1": ["鲁班七号", "夏侯惇", "用户3", "用户4", "用户5"],
       token: "@string(30)"
     },
     msg: "Success",
@@ -51,6 +52,13 @@ if (debug) {
           name: "权限测试",
           name_en: "Authority",
           router: "/authority",
+          icon: "el-icon-setting",
+          children: []
+        },
+        {
+          name: "用户管理",
+          name_en: "UserManage",
+          router: "/userManage",
           icon: "el-icon-setting",
           children: []
         }
