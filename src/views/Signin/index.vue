@@ -112,6 +112,7 @@ export default {
             localStorage.userId = res.data.data.userId;
             localStorage.token = res.data.data.token;
             this.getMenu();
+            this.getResources();
           });
         } else {
           return false;
@@ -120,15 +121,23 @@ export default {
     },
     getMenu() {
       this.$axios({
-        url: "getMenu",
+        url: "login/getMenus",
         method: "GET"
       }).then(res => {
         // 提取菜单数组，整理成树结构，交给本地存储
-        let inputMenuArray = res.data.data.menu;
-        console.log("inputMenuArray");
-        console.log(inputMenuArray);
+        let inputMenuArray = res.data.data.menuArray;
         let treeMenuArray = this.$options.methods.convertInputMenuToTreeMenu(inputMenuArray);
         localStorage.menu = JSON.stringify(treeMenuArray);
+      });
+    },
+    getResources() {
+      this.$axios({
+        url: "login/getResources",
+        method: "GET"
+      }).then(res => {
+        // 提取资源数组，交给本地存储
+        let resourceArray = res.data.data.resourceArray;
+        localStorage.resource = JSON.stringify(resourceArray);
         this.$router.push("notes");
       });
     },
@@ -146,8 +155,6 @@ export default {
           router: inputMenu.router, icon: inputMenu.icon, pid: inputMenu.pid, children : []};
         allTreeMenuArray.push(treeMenu);
       }
-      console.log("allTreeMenuArray");
-      console.log(allTreeMenuArray);
       //然后整理成树型结构，组成树型菜单数组
       let treeMenuArray = [];
       for (let i = 0; i < allTreeMenuArray.length; i++) {
@@ -157,8 +164,6 @@ export default {
           treeMenuArray.push(treeMenu);
         }
       }
-      console.log("treeMenuArray");
-      console.log(treeMenuArray);
       return treeMenuArray;
     },
     addChildrenToTreeMenu(treeMenu, allTreeMenuArray){
