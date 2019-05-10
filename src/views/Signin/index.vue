@@ -72,7 +72,7 @@ export default {
     return {
       form: {
         name: localStorage.userInfo || "admin",
-        password: localStorage.passwordInfo || "654321"
+        password: localStorage.passwordInfo || "1111"
       },
       isMemery: false,
       rules: {
@@ -123,15 +123,53 @@ export default {
         url: "getMenu",
         method: "GET"
       }).then(res => {
-        // 提取菜单数组，交给本地存储
-        let menu = res.data.data.menu;
-        localStorage.menu = JSON.stringify(menu);
+        // 提取菜单数组，整理成树结构，交给本地存储
+        let inputMenuArray = res.data.data.menu;
+        console.log("inputMenuArray");
+        console.log(inputMenuArray);
+        let treeMenuArray = this.$options.methods.convertInputMenuToTreeMenu(inputMenuArray);
+        localStorage.menu = JSON.stringify(treeMenuArray);
         this.$router.push("notes");
       });
     },
     openMsg() {
       // 注意这里使用了国际化
       this.$message.warning(this.$t('m.login.info'));
+    },
+    convertInputMenuToTreeMenu(inputMenuArray) {
+      //将接收到的平铺菜单整理成树形菜单结构
+      //首先组成未整理过的树型菜单数组，里面包含平铺展开的所有节点，并为每个节点增加children属性
+      let allTreeMenuArray = [];
+      for (let i = 0; i < inputMenuArray.length; i ++){
+        let inputMenu = inputMenuArray[i];
+        let treeMenu = {id : inputMenu.id, name : inputMenu.name, name_en: inputMenu.name_en,
+          router: inputMenu.router, icon: inputMenu.icon, pid: inputMenu.pid, children : []};
+        allTreeMenuArray.push(treeMenu);
+      }
+      console.log("allTreeMenuArray");
+      console.log(allTreeMenuArray);
+      //然后整理成树型结构，组成树型菜单数组
+      let treeMenuArray = [];
+      for (let i = 0; i < allTreeMenuArray.length; i++) {
+        let treeMenu = allTreeMenuArray[i];
+        if (treeMenu.pid === 0) {
+          treeMenu = this.addChildrenToTreeMenu(treeMenu, allTreeMenuArray);
+          treeMenuArray.push(treeMenu);
+        }
+      }
+      console.log("treeMenuArray");
+      console.log(treeMenuArray);
+      return treeMenuArray;
+    },
+    addChildrenToTreeMenu(treeMenu, allTreeMenuArray){
+      //递归为节点增加子节点
+      for (let i = 0; i < allTreeMenuArray.length; i ++ ) {
+        if (allTreeMenuArray[i].pid === treeMenu.id){
+          allTreeMenuArray[i] = this.addChildrenToTreeMenu(allTreeMenuArray[i], allTreeMenuArray);
+          treeMenu.children.push(allTreeMenuArray[i]);
+        }
+      }
+      return treeMenu;
     }
   },
   watch: {
