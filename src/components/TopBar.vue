@@ -62,8 +62,8 @@ export default {
       this.isFullscreen = !screenfull.isFullscreen
     },
     logout() {
-      localStorage.clear()
-      bus.$emit('stopMusic')
+      localStorage.clear();
+      bus.$emit('stopMusic');
       this.$router.push('signin')
     }
   },

@@ -111,8 +111,9 @@ export default {
             localStorage.userName = res.data.data.userName;
             localStorage.userId = res.data.data.userId;
             localStorage.token = res.data.data.token;
+            //这些方法不能一口气全调完，不然可能会出现还没等到API反馈时，就跳转了页面。
+            //只能一个一个调，调完一个调下一个，调完最后一个时再跳转页面。
             this.getMenu();
-            this.getResources();
           });
         } else {
           return false;
@@ -128,6 +129,7 @@ export default {
         let inputMenuArray = res.data.data.menuArray;
         let treeMenuArray = this.$options.methods.convertInputMenuToTreeMenu(inputMenuArray);
         localStorage.menu = JSON.stringify(treeMenuArray);
+        this.getResources();
       });
     },
     getResources() {

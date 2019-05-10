@@ -19,3 +19,14 @@ export function param(json) {
     })
   ).join('&')
 }
+
+/**检查有没有调用某url资源的权限*/
+export function checkResources(url) {
+  let resourceArray = JSON.parse(localStorage.resource);
+  for (let i = 0; i < resourceArray.length; i ++){
+    if (resourceArray[i].url === url) {
+      return false;
+    }
+  }
+  return true;
+}
