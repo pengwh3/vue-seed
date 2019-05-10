@@ -10,11 +10,7 @@ export default {
   computed: {
     isAdminAble() {
       let menu = JSON.parse(localStorage.menu);
-      if (menu[0].children.length === 2) {
-        return true;
-      } else {
-        return false;
-      }
+      return menu[0].children.length === 2;
     }
   },
   methods: {
