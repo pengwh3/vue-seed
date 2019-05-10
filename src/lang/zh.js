@@ -1,6 +1,6 @@
 export const m = {
   login: {
-    introduction: '欢迎使用自动化装逼系统',
+    introduction: '欢迎使用我的系统',
     name_holder: '用户名',
     password_holder: '密码',
     name_tip: '请输入用户名',
@@ -20,6 +20,8 @@ export const m = {
     about: '关于作者',
     weather: '天气预报',
     cube: '魔幻立方',
-    authority: '权限测试'
+    authority: '权限测试',
+    userManage: '用户管理',
+    roleManage: '角色管理'
   }
 }

@@ -19,6 +19,10 @@ const Weather = resolve => require(["@/views/Weather"], resolve);
 const Cube = resolve => require(["@/views/Cube"], resolve);
 // 权限测试
 const AuthorityTest = resolve => require(["@/views/AuthorityTest"], resolve);
+// 用户管理
+const UserManage = resolve => require(["@/views/UserManage"], resolve);
+// 角色管理
+const RoleManage = resolve => require(["@/views/RoleManage"], resolve);
 // 404
 const Notfound = resolve => require(["@/views/Notfound"], resolve);
 
@@ -85,6 +89,22 @@ const router = new Router({
             title: "权限测试"
           },
           component: AuthorityTest
+        },
+        {
+          path: "userManage",
+          meta: {
+            requireAuth: true,
+            title: "用户管理"
+          },
+          component: UserManage
+        },
+        {
+          path: "roleManage",
+          meta: {
+            requireAuth: true,
+            title: "角色管理"
+          },
+          component: RoleManage
         }
       ]
     },

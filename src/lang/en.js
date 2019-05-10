@@ -20,6 +20,8 @@ export const m = {
     about: 'About',
     weather: 'Weather',
     cube: 'Cube',
-    authority: 'Authority'
+    authority: 'Authority',
+    userManage: 'userManage',
+    roleManage: 'roleManage'
   }
-}
+};
