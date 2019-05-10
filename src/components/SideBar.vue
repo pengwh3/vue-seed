@@ -1,60 +1,61 @@
 <!-- 左侧导航组件 -->
 <!-- 使用说明：<side-bar></side-bar> -->
 <template>
-  <div id="sidebar-wrap" :class="{ collapsed: toggSiderBar }">
-    <h3 class="logo">
-      <span class="rythm twist1">{{toggSiderBar ? 'VUE': 'AUTO VUE'}}</span>
-    </h3>
-    <el-menu background-color="#3f4d67" text-color="#fff" :default-active="$route.path" :unique-opened="true" :router="true" mode="vertical" :collapse="toggSiderBar">
-      <template v-for="item in menu">
-        <el-submenu v-if="item.children.length !== 0" :index="item.router" :key="item.router">
-          <template slot="title">
-            <i :class="item.icon"></i>
-            <span slot="title">{{langType === 'en'? item.name_en: item.name}}</span>
-          </template>
-          <el-menu-item v-for="child in item.children" :index="child.router" :key="child.router">
-            <!-- <i :class="child.icon"></i> -->
-            <span slot="title">{{langType === 'en'? child.name_en: child.name}}</span>
-          </el-menu-item>
-        </el-submenu>
+    <div id="sidebar-wrap" :class="{ collapsed: toggSiderBar }">
+        <h3 class="logo">
+          <span class="rythm twist1">{{toggSiderBar ? 'VUE': 'AUTO VUE'}}</span>
+        </h3>
+        <el-menu background-color="#3f4d67" text-color="#fff" :default-active="$route.path" :unique-opened="true" :router="true" mode="vertical" :collapse="toggSiderBar">
+            <template v-for="item in menu">
+                <el-submenu v-if="item.children.length !== 0" :index="item.router" :key="item.router">
+                    <template slot="title">
+                        <i :class="item.icon"></i>
+                        <span slot="title">{{langType === 'en'? item.name_en: item.name}}</span>
+                    </template>
+                    <el-menu-item v-for="child in item.children" :index="child.router" :key="child.router">
+                        <!-- <i :class="child.icon"></i> -->
+                        <span slot="title">{{langType === 'en'? child.name_en: child.name}}</span>
+                    </el-menu-item>
+                </el-submenu>
 
-        <el-menu-item v-else :index="item.router" :key="item.router">
-          <i :class="item.icon"></i>
-          <span slot="title">{{langType === 'en'? item.name_en: item.name}}</span>
-        </el-menu-item>
-      </template>
-      <!-- <el-submenu index="1">
-              <template slot="title">
-                  <i class="el-icon-time"></i>
-                  <span slot="title">项目管理</span>
-              </template>
-              <el-menu-item index="/project-info">
-                  <i class="el-icon-menu"></i>
-                  <span slot="title">项目信息</span>
-              </el-menu-item>
-              <el-menu-item index="/project-path">
-                  <i class="el-icon-share"></i>
-                  <span slot="title">项目路径</span>
-              </el-menu-item>
-              <el-menu-item index="/enroll-list">
-                  <i class="el-icon-document"></i>
-                  <span slot="title">报名列表</span>
-              </el-menu-item>
-          </el-submenu>
+                <el-menu-item v-else :index="item.router" :key="item.router">
+                    <i :class="item.icon"></i>
+                    <span slot="title">{{langType === 'en'? item.name_en: item.name}}</span>
+                </el-menu-item>
+
+            </template>
+            <!-- <el-submenu index="1">
+                    <template slot="title">
+                        <i class="el-icon-time"></i>
+                        <span slot="title">项目管理</span>
+                    </template>
+                    <el-menu-item index="/project-info">
+                        <i class="el-icon-menu"></i>
+                        <span slot="title">项目信息</span>
+                    </el-menu-item>
+                    <el-menu-item index="/project-path">
+                        <i class="el-icon-share"></i>
+                        <span slot="title">项目路径</span>
+                    </el-menu-item>
+                    <el-menu-item index="/enroll-list">
+                        <i class="el-icon-document"></i>
+                        <span slot="title">报名列表</span>
+                    </el-menu-item>
+                </el-submenu>
                 <el-menu-item index="/operation-log">
                     <i class="el-icon-date"></i>
                     <span slot="title">操作日志</span>
-      </el-menu-item>-->
-    </el-menu>
-    <div class="animated bounceInDown imgWrap">
-      <img src="../../static/img/little.gif" height="60px" class="gif rythm pulse3" @click="toggleDance">
+                </el-menu-item> -->
+        </el-menu>
+        <div class="animated bounceInDown imgWrap">
+            <img src="../../static/img/little.gif" height="60px" class="gif rythm pulse3"  @click="toggleDance">
+        </div>
     </div>
-  </div>
 </template>
 <script>
 import Rythm from "rythm.js";
 const rythm = new Rythm();
-const music = require("../../static/audio/romeostune.mp3");
+const music = require("../../static/audio/GaMetal - Venus Lighthouse (Acoustic Short).mp3");
 import bus from "@/bus";
 
 export default {
@@ -110,7 +111,7 @@ export default {
   top: 0;
   bottom: 0;
   z-index: 5;
-  transition: all 0.5s;
+  transition: all .5s;
   background: #3f4d67;
   &.collapsed {
     width: 64px;
@@ -157,4 +158,5 @@ export default {
 .rythm.twist1 {
   display: block;
 }
+
 </style>
