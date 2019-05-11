@@ -3,7 +3,7 @@
 <template>
     <div id="sidebar-wrap" :class="{ collapsed: toggSiderBar }">
         <h3 class="logo">
-          <span class="rythm twist1">{{toggSiderBar ? 'VUE': 'AUTO VUE'}}</span>
+          <span class="rythm twist1">{{toggSiderBar ? '联通': '中国联通'}}</span>
         </h3>
         <el-menu background-color="#3f4d67" text-color="#fff" :default-active="$route.path" :unique-opened="true" :router="true" mode="vertical" :collapse="toggSiderBar">
             <template v-for="item in menu">
