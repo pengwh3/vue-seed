@@ -1,6 +1,7 @@
 export const m = {
   login: {
-    introduction: 'welcome to my system',
+    production_name: 'china unicom 2G offline system',
+    introduction: 'welcome',
     name_holder: 'username',
     password_holder: 'password',
     name_tip: 'Please enter the username',

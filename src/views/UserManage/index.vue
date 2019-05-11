@@ -1,7 +1,7 @@
 <template>
     <div>
         用户管理
-        <contact-card></contact-card>
+        <!--<contact-card></contact-card>-->
     </div>
 </template>
 <script>

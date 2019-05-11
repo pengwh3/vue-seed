@@ -36,7 +36,7 @@ const router = new Router({
       name: "Signin",
       meta: {
         requireAuth: false,
-        title: "Auto Vue"
+        title: "中国联通"
       },
       component: Signin
     },

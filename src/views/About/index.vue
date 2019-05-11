@@ -1,7 +1,7 @@
 <template>
     <div>
         关于作者
-        <contact-card></contact-card>
+        <!--<contact-card></contact-card>-->
     </div>
 </template>
 <script>

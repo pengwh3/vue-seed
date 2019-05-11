@@ -1,6 +1,7 @@
 export const m = {
   login: {
-    introduction: '欢迎使用我的系统',
+    production_name: '中国联通2G设备退网管理系统',
+    introduction: '欢迎使用',
     name_holder: '用户名',
     password_holder: '密码',
     name_tip: '请输入用户名',
