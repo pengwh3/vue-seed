@@ -8,8 +8,9 @@ export const m = {
     password_tip: 'Please enter the password',
     remember: 'Remember Me',
     forget: 'Forgot Password',
-    info: 'please call 911',
-    button: 'Login'
+    info: 'please call administrator',
+    button: 'Login',
+    login_error: 'login error, please check your account'
   },
   topbar: {
     sayHi: 'Hi',

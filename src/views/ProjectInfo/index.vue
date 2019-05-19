@@ -2,7 +2,7 @@
   <div>
     <el-card class="box-card">
       <div slot="header" class="clearfix">
-        <i class="el-icon-edit"></i>&nbsp;&nbsp;
+        <i class="el-icon-edit"></i>
         <span>Vue开发备忘录</span>
       </div>
       <div class="text item">

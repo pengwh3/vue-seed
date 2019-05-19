@@ -18,13 +18,13 @@ import 'element-ui/lib/theme-chalk/index.css'
 import './assets/scss/element-variables.scss'
 Vue.use(ElementUI);
 // 使用登录页粒子效果插件
-Vue.use(VueParticles)
+Vue.use(VueParticles);
 // 将axios绑定到vue原型上
-Vue.prototype.$axios = axios
+Vue.prototype.$axios = axios;
 // Vue 的全局配置
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 // 上线全局请求配置
-axios.defaults.baseURL = HOST
+axios.defaults.baseURL = HOST;
 // axios.defaults.baseURL = 'api/v1/'
 
 // http request 拦截器
@@ -37,7 +37,7 @@ axios.interceptors.request.use(
         return config;
     },
     error => {
-        console.log(error) // for debug
+        console.log(error); // for debug
         Promise.reject(error)
     }
 )
@@ -45,6 +45,12 @@ axios.interceptors.request.use(
 // http response 拦截器
 axios.interceptors.response.use(
     response => {
+      switch (response.data.status) {
+        // 如果后端返回没有API权限
+        case 401:
+          router.replace("/unauthorized");
+          return Promise.reject(response.data);
+      }
         return response
     },
     error => {
@@ -53,7 +59,7 @@ axios.interceptors.response.use(
                 // 如果后端返回没有权限
                 case 401:
                     // 清除token信息并跳转到登录页面
-                    localStorage.clear()
+                    localStorage.clear();
                     router.replace("/signin");
             }
         }

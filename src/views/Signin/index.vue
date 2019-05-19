@@ -43,6 +43,8 @@
     </div>
 </template>
 <script>
+import {convertNodeArrayToTreeNodeArray} from "../../utils";
+
 export default {
   name: "signin",
   data() {
@@ -108,38 +110,36 @@ export default {
               password: this.form.password
             }
           }).then(res => {
-            localStorage.userName = res.data.data.userName;
-            localStorage.userId = res.data.data.userId;
-            localStorage.token = res.data.data.token;
-            //这些方法不能一口气全调完，不然可能会出现还没等到API反馈时，就跳转了页面。
-            //只能一个一个调，调完一个调下一个，调完最后一个时再跳转页面。
-            this.getMenu();
+            if (res.data.status === 200) {
+              localStorage.userName = res.data.data.userName;
+              localStorage.userId = res.data.data.userId;
+              localStorage.token = res.data.data.token;
+              this.getResources();
+            }else{
+              this.$message.warning(this.$t('m.login.login_error'));
+            }
           });
         } else {
           return false;
         }
       });
     },
-    getMenu() {
-      this.$axios({
-        url: "login/getMenus",
-        method: "GET"
-      }).then(res => {
-        // 提取菜单数组，整理成树结构，交给本地存储
-        let inputMenuArray = res.data.data.menuArray;
-        let treeMenuArray = this.$options.methods.convertInputMenuToTreeMenu(inputMenuArray);
-        localStorage.menu = JSON.stringify(treeMenuArray);
-        this.getResources();
-      });
-    },
     getResources() {
       this.$axios({
-        url: "login/getResources",
+        url: "selectResourceArrayByUser",
         method: "GET"
       }).then(res => {
         // 提取资源数组，交给本地存储
-        let resourceArray = res.data.data.resourceArray;
+        let resourceArray = res.data.data.dataArray;
         localStorage.resource = JSON.stringify(resourceArray);
+        // 从中提取菜单数组，交给本地存储
+        let menuArray = [];
+        for (let i = 0; i < resourceArray.length; i ++){
+          if (resourceArray[i].isMenu === 1) {
+            menuArray.push(resourceArray[i]);
+          }
+        }
+        localStorage.menu = JSON.stringify(convertNodeArrayToTreeNodeArray(menuArray));
         this.$router.push("notes");
       });
     },
@@ -147,46 +147,15 @@ export default {
       // 注意这里使用了国际化
       this.$message.warning(this.$t('m.login.info'));
     },
-    convertInputMenuToTreeMenu(inputMenuArray) {
-      //将接收到的平铺菜单整理成树形菜单结构
-      //首先组成未整理过的树型菜单数组，里面包含平铺展开的所有节点，并为每个节点增加children属性
-      let allTreeMenuArray = [];
-      for (let i = 0; i < inputMenuArray.length; i ++){
-        let inputMenu = inputMenuArray[i];
-        let treeMenu = {id : inputMenu.id, name : inputMenu.name, name_en: inputMenu.name_en,
-          router: inputMenu.router, icon: inputMenu.icon, pid: inputMenu.pid, children : []};
-        allTreeMenuArray.push(treeMenu);
-      }
-      //然后整理成树型结构，组成树型菜单数组
-      let treeMenuArray = [];
-      for (let i = 0; i < allTreeMenuArray.length; i++) {
-        let treeMenu = allTreeMenuArray[i];
-        if (treeMenu.pid === 0) {
-          treeMenu = this.addChildrenToTreeMenu(treeMenu, allTreeMenuArray);
-          treeMenuArray.push(treeMenu);
-        }
-      }
-      return treeMenuArray;
-    },
-    addChildrenToTreeMenu(treeMenu, allTreeMenuArray){
-      //递归为节点增加子节点
-      for (let i = 0; i < allTreeMenuArray.length; i ++ ) {
-        if (allTreeMenuArray[i].pid === treeMenu.id){
-          allTreeMenuArray[i] = this.addChildrenToTreeMenu(allTreeMenuArray[i], allTreeMenuArray);
-          treeMenu.children.push(allTreeMenuArray[i]);
-        }
-      }
-      return treeMenu;
-    }
   },
   watch: {
     isMemery(n, o) {
       if (n) {
-        localStorage.userInfo = this.form.name
-        localStorage.passwordInfo = this.form.password
+        localStorage.userInfo = this.form.name;
+        localStorage.passwordInfo = this.form.password;
       } else {
-        localStorage.removeItem('userInfo')
-        localStorage.removeItem('passwordInfo')
+        localStorage.removeItem('userInfo');
+        localStorage.removeItem('passwordInfo');
       }
     }
   }

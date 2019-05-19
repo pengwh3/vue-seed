@@ -13,6 +13,9 @@ const ProjectInfo = resolve => require(["@/views/ProjectInfo"], resolve);
 // 关于作者
 const About = resolve => require(["@/views/About"], resolve);
 
+//好吃的
+const AnythingToEat = resolve => require(["@/views/Eat"], resolve);
+
 // 天气预报
 const Weather = resolve => require(["@/views/Weather"], resolve);
 // 立方体
@@ -25,6 +28,8 @@ const UserManage = resolve => require(["@/views/UserManage"], resolve);
 const RoleManage = resolve => require(["@/views/RoleManage"], resolve);
 // 404
 const Notfound = resolve => require(["@/views/Notfound"], resolve);
+// 未授权
+const Unauthorized = resolve => require(["@/views/Unauthorized"], resolve);
 
 Vue.use(Router);
 
@@ -62,9 +67,17 @@ const router = new Router({
           path: "about",
           meta: {
             requireAuth: true,
-            title: "关于作者"
+            title: "关于"
           },
           component: About
+        },
+        {
+          path: "deliciousFood",
+          meta: {
+            requireAuth: true,
+            title: "好吃的"
+          },
+          component: AnythingToEat
         },
         {
           path: "weather",
@@ -105,10 +118,18 @@ const router = new Router({
             title: "角色管理"
           },
           component: RoleManage
+        },
+        {
+          path: "/unauthorized",
+          meta: {
+            requireAuth: false,
+            title: "UnAuthorized"
+          },
+          component: Unauthorized
         }
       ]
     },
-    // 最后是404页面
+    // 404页面
     {
       path: "*",
       meta: {
@@ -125,8 +146,11 @@ router.beforeEach((to, from, next) => {
   // 自动化修改页面标签的 title
   document.title = to.meta.title;
   // 如果已经登录，并且要去登录页，就不让TA去登录页，重定向到首页
+  ////如果未登录，并且要去登录页以外的页面，就不让去，重定向到登录页
   if (to.path === "/signin" && localStorage.token) {
     next("/notes");
+  } else if (to.path !== "/signin" && !localStorage.token) {
+    next("/signin");
   } else {
     next();
   }

@@ -4,7 +4,7 @@
       <el-card class="box-card">
         <div slot="header" class="clearfix">
           <i class="el-icon-edit"></i>
-          <span>关于</span>
+          <span>好吃的</span>
         </div>
         <el-row v-for="imageObject in imageObjectArray">
           <el-col style="text-align: center">
@@ -25,10 +25,10 @@ export default {
   data() {
     return {
       imageObjectArray: [
-        {name: "某网友的独白", path: "../../../static/img/comment.png"},
-        {name: "", path: "../../../static/img/flight_night.jpg"},
-        {name: "", path: "../../../static/img/sydney_bridge.jpg"},
-        {name: "", path: "../../../static/img/sydney_theatre.jpg"}
+        {name: "好吃的汉堡", path: "../../../static/img/hamburger.png"},
+        {name: "fish&chips", path: "../../../static/img/fish&chips.jpg"},
+        {name: "叉烧&烧鸭饭", path: "../../../static/img/roast_duck.jpg"},
+        {name: "炸酱面", path: "../../../static/img/noodles.jpg"}
       ]
     };
   }

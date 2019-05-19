@@ -8,8 +8,9 @@ export const m = {
     password_tip: '请输入密码',
     remember: '记住密码',
     forget: '忘记密码',
-    info: '你咋忘不了吃呢？',
-    button: '登 录'
+    info: '请联系管理员',
+    button: '登 录',
+    login_error: '登录失败，请检查账号密码'
   },
   topbar: {
     sayHi: '嗨',
