@@ -3961,9 +3961,10 @@ ripemd160@^2.0.0, ripemd160@^2.0.1:
     hash-base "^2.0.0"
     inherits "^2.0.1"
 
-rythm.js@^2.2.1:
-  version "2.2.2"
-  resolved "http://registry.npm.taobao.org/rythm.js/download/rythm.js-2.2.2.tgz#1d7b9dae09d3939064272cb37af3f5091c2881b5"
+rythm.js@^2.2.4:
+  version "2.2.4"
+  resolved "https://registry.yarnpkg.com/rythm.js/-/rythm.js-2.2.4.tgz#7f2fa0807a3db963428a1f1b110ca3a808c0bfd0"
+  integrity sha512-zc6EcH6GCCS+DmkYQ1MS4pHzmP/DM1DC0hPQW/BkPlY/lcTBd16HPOAnf0jdCAmYpVOjxrJcY7CFxdastQL5oQ==
 
 safe-buffer@5.1.1, safe-buffer@^5.1.0, safe-buffer@^5.1.1, safe-buffer@~5.1.0, safe-buffer@~5.1.1:
   version "5.1.1"

@@ -53,6 +53,7 @@
     </div>
 </template>
 <script>
+  //TODO 这个Rythm类库不兼容IE11，会导致页面一片空白。如果要兼容IE11，建议删除此类库。
 import Rythm from "rythm.js";
 const rythm = new Rythm();
 const music = require("../../static/audio/Philter - Adventure Time [mqms].mp3");
@@ -77,6 +78,7 @@ export default {
   created() {
     this.initRythm();
     bus.$on("stopMusic", () => {
+      console.log("bus.on");
       this.isMusicOn = false;
       rythm.stop();
     });
@@ -93,7 +95,7 @@ export default {
     toggleDance() {
       // console.log(localStorage.token);
       // console.log(localStorage.menu);
-      console.log(this.isMusicOn);
+      // console.log(this.isMusicOn);
       if (this.isMusicOn) {
         this.isMusicOn = false;
         rythm.stop();

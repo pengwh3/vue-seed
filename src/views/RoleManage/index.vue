@@ -9,27 +9,27 @@
       <el-col :span="24" class="toolbar" style="padding-bottom: 0;">
         <el-form :inline="true">
           <el-form-item>
-            <el-input v-model="name" placeholder="角色名称"></el-input>
+            <el-input v-model="queryCriteria.name" placeholder="角色名称"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" v-on:click="getData" v-bind:disabled="isSelectArrayDisabled">查询</el-button>
+            <el-button type="primary" v-on:click="getData" v-bind:disabled="buttonControl.isSelectArrayDisabled">查询</el-button>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" v-on:click="handleAdd" v-bind:disabled="isAddDisabled">新增</el-button>
+            <el-button type="primary" v-on:click="handleAdd" v-bind:disabled="buttonControl.isAddDisabled">新增</el-button>
           </el-form-item>
           <el-form-item>
-            <el-button type="danger" v-on:click="deleteSubmit" v-bind:disabled="isDeleteDisabled">删除</el-button>
+            <el-button type="danger" v-on:click="deleteSubmit" v-bind:disabled="buttonControl.isDeleteDisabled">删除</el-button>
           </el-form-item>
         </el-form>
       </el-col>
 
     <!--列表-->
-      <el-table :data="dataArray" @selection-change="rowSelectedChange" border stripe style="width: 100%;" :header-cell-style="{background:'#F3F4F7'}" v-loading="isTableLoading">
+      <el-table :data="tableData.dataArray" @selection-change="rowSelectedChange" border stripe style="width: 100%;" :header-cell-style="{background:'#F3F4F7'}" v-loading="tableData.isLoading">
         <el-table-column type="selection" min-width="5%" align="center"></el-table-column>
         <el-table-column prop="name" label="角色名称" min-width="85%" ></el-table-column>
         <el-table-column label="操作" min-width="10%" align="center">
           <template slot-scope="scope">
-            <el-button type="warning" size="mini" v-bind:disabled="isUpdateDisabled" v-on:click="handleEdit(scope.row.id)">修改</el-button>
+            <el-button type="warning" size="mini" v-bind:disabled="buttonControl.isUpdateDisabled" v-on:click="handleEdit(scope.row.id)">修改</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -39,18 +39,18 @@
           background
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
-          :current-page="currentPage"
+          :current-page="pageData.currentPage"
           :page-sizes="[5, 10, 20, 30, 40, 50]"
           :page-size="10"
           layout="total, sizes, prev, pager, next, jumper"
-          :total=total
+          :total=pageData.total
           style="float:right;font-weight: normal;">
         </el-pagination>
       </el-col>
     </el-card>
 
     <!--新增界面-->
-    <el-dialog :title="addOrEditFormData.title" :visible.sync="addFormVisible" :close-on-click-modal="false" :modal-append-to-body="false">
+    <el-dialog :title="addOrEditFormData.title" :visible.sync="addOrEditFormData.addFormVisible" :close-on-click-modal="false" :modal-append-to-body="false">
       <el-form :model="addOrEditFormData" label-width="100px" :rules="addOrEditFormRules" ref="addForm">
         <el-form-item label="角色名称" prop="name">
           <el-input v-model="addOrEditFormData.name" auto-complete="off"></el-input>
@@ -67,7 +67,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click.native="addFormVisible = false">取消</el-button>
+        <el-button @click.native="addOrEditFormData.addFormVisible = false">取消</el-button>
         <el-button type="primary" @click.native="addOrEditFormData.id === 0? addSubmit() : editSubmit()" :loading="addOrEditFormData.addLoading">提交</el-button>
       </div>
     </el-dialog>
@@ -89,24 +89,32 @@ export default {
   data() {
     return {
       //根据保存的权限来控制按钮是否可用
-      isAddDisabled : !(checkResources("/system/addRole") && checkResources("/system/selectAllResources")),
-      isDeleteDisabled : !checkResources("/system/deleteRole"),
-      isUpdateDisabled : !(checkResources("/system/updateRole") && checkResources("/system/selectAllResources") && checkResources("/system/selectRole")),
-      isSelectArrayDisabled : !checkResources("/system/selectRoleArray"),
-      //table是否显示旋转表示在读取数据中
-      isTableLoading: false,
+      buttonControl: {
+        isAddDisabled : !(checkResources("/system/addRole") && checkResources("/system/selectAllResources")),
+        isDeleteDisabled : !checkResources("/system/deleteRole"),
+        isUpdateDisabled : !(checkResources("/system/updateRole") && checkResources("/system/selectAllResources") && checkResources("/system/selectRole")),
+        isSelectArrayDisabled : !checkResources("/system/selectRoleArray"),
+      },
       //查询条件
-      name : "",
-      //当前页数
-      currentPage : 1,
-      //每页几条
-      pageSize : 10,
-      //总条数
-      total : 0,
-      //table数据
-      dataArray: [],
-      //控制新增窗口显示
-      addFormVisible: false,
+      queryCriteria: {
+          name : ""
+      },
+      tableData: {
+        //table是否显示旋转表示在读取数据中
+        isLoading: false,
+        //table数据
+        dataArray: [],
+        //列表选中项（删除用）
+        rowSelected: []
+      },
+      pageData: {
+        //当前页数
+        currentPage : 1,
+        //每页几条
+        pageSize : 10,
+        //总条数
+        total : 0,
+      },
       //新增/修改窗口的用户输入规则
       addOrEditFormRules: {
         name: [
@@ -115,6 +123,8 @@ export default {
       },
       //新增界面数据
       addOrEditFormData: {
+        //控制新增窗口显示
+        addFormVisible: false,
         title: "",
         id: 0,
         name: "",
@@ -123,37 +133,35 @@ export default {
         selectedResourceArray: [],
         addLoading: false
       },
-      //列表选中项（删除用）
-      rowSelected: []
     }
   },
   methods: {
     handleSizeChange: function (val) {
       // console.log(`每页 ${val} 条`);
-      this.pageSize = val;
+      this.pageData.pageSize = val;
       this.getData()
     },
     handleCurrentChange: function (val) {
       // console.log(`当前页: ${val}`);
-      this.currentPage = val;
+      this.pageData.currentPage = val;
       this.getData()
     },
     getData: function ()  {
-      this.isTableLoading = true;
+      this.tableData.isTableLoading = true;
       this.$axios({
         url: "selectRoleArray",
         method: "GET",
         params: {
-          roleName: this.name,
-          pageSize: this.pageSize,
-          currentPage: this.currentPage
+          roleName: this.queryCriteria.name,
+          pageSize: this.pageData.pageSize,
+          currentPage: this.pageData.currentPage
         }
       }).then(res => {
-        this.dataArray = res.data.data.dataArray;
-        this.pageSize = res.data.data.pageSize;
-        this.currentPage = res.data.data.currentPage;
-        this.total = res.data.data.total;
-        this.isTableLoading = false;
+        this.tableData.dataArray = res.data.data.dataArray;
+        this.pageData.pageSize = res.data.data.pageSize;
+        this.pageData.currentPage = res.data.data.currentPage;
+        this.pageData.total = res.data.data.total;
+        this.tableData.isTableLoading = false;
       });
     },
     //显示新增界面
@@ -166,7 +174,7 @@ export default {
         this.selectAllResources(),
       ]).then(this.$axios.spread((resourceResp) => {
         this.addOrEditFormData.allResourceTreeArray = convertNodeArrayToTreeNodeArray(resourceResp.data.data.dataArray);
-        this.addFormVisible = true;
+        this.addOrEditFormData.addFormVisible = true;
       }));
     },
     //新增提交
@@ -185,7 +193,7 @@ export default {
             if (res.data.data === true) {
               this.$message.success("添加成功");
               this.getData();
-              this.addFormVisible = false;
+              this.addOrEditFormData.addFormVisible = false;
             }else{
               this.$message.success("添加失败");
             }
@@ -211,7 +219,7 @@ export default {
             this.addOrEditFormData.selectedResourceArray.push(selectedResourceArray[i].id);
           }
         }
-        this.addFormVisible = true;
+        this.addOrEditFormData.addFormVisible = true;
       }));
     },
     editSubmit: function () {
@@ -230,7 +238,7 @@ export default {
             if (res.data.data === true) {
               this.$message.success("修改成功");
               this.getData();
-              this.addFormVisible = false;
+              this.addOrEditFormData.addFormVisible = false;
             }else{
               this.$message.error("修改失败");
             }
@@ -240,10 +248,10 @@ export default {
       });
     },
     rowSelectedChange: function (rowSelected) {
-      this.rowSelected = rowSelected;
+      this.tableData.rowSelected = rowSelected;
     },
     deleteSubmit: function () {
-      let selectedRowArray = this.rowSelected;
+      let selectedRowArray = this.tableData.rowSelected;
       if (selectedRowArray.length === 0) {
         this.$message.warning("请至少选择一项");
         return false;
